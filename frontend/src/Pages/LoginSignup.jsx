@@ -1,26 +1,105 @@
-import React from 'react';
-import './CSS/LoginSignup.css'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './CSS/LoginSignup.css';
 
 const LoginSignup = () => {
-    return(
-        <div className='loginsignup'>
+    const [isLogin, setIsLogin] = useState(false);
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+    const navigate = useNavigate();
+    const loggedRoles = []; // Array to store logged-in roles
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const endpoint = isLogin 
+            ? 'http://localhost:4000/api/users/login' 
+            : 'http://localhost:4000/api/users/register';
+        const body = isLogin 
+            ? { email, password } 
+            : { username, email, password };
+
+        try {
+            const response = await axios.post(endpoint, body, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = response.data;
+
+            if (response.status === 200) {
+                setMessage(isLogin ? 'Login successful!' : 'Registration successful!');
+                if (isLogin) {
+                    localStorage.setItem('token', data.token); // Save token in localStorage
+                    loggedRoles.push(data.role); // Add role to loggedRoles array
+                    console.log('Logged Roles:', loggedRoles); // Log all roles
+                    
+                    if (data.role === 'admin') {
+                        navigate('/admin'); // Redirect to admin page for admins
+                    } else {
+                        navigate('/'); // Redirect to home for regular users
+                    }
+                } else {
+                    setIsLogin(true); // Switch to login form after registration
+                }
+            } else {
+                setMessage(data.error || 'An error occurred');
+            }
+        } catch (error) {
+            console.error('Error:', error.response ? error.response.data : error.message);
+            setMessage('An error occurred. Please try again.');
+        }
+    };
+
+    return (
+        <div className="loginsignup">
             <div className="loginsignup-container">
-                <h1>Sign Up</h1>
-                <div className="loginsignup-fields">
-                    <input type="text" placeholder='Your name'/>
-                    <input type="email" placeholder='Email Address' />
-                    <input type="password" placeholder='Password' />
-                </div>
-                <button>Continue</button>
-                <p className='loginsignup-login'>Already have an account? <span>Login Here</span></p>
-                <div className="loginsignup-agree">
-                    <input type="checkbox" name='' id='' />
-                    <p>By Continuing, i agree to the terms of use & privacy policy </p>
-                </div>
+                <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
+                {message && <p>{message}</p>}
+                <form onSubmit={handleSubmit}>
+                    <div className="loginsignup-fields">
+                        {!isLogin && (
+                            <input
+                                type="text"
+                                placeholder="Your name"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
+                        )}
+                        <input
+                            type="email"
+                            placeholder="Email Address"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    <button type="submit">{isLogin ? 'Login' : 'Continue'}</button>
+                </form>
+                <p className="loginsignup-login">
+                    {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
+                    <span onClick={() => setIsLogin(!isLogin)}>
+                        {isLogin ? 'Sign Up Here' : 'Login Here'}
+                    </span>
+                </p>
+                {!isLogin && (
+                    <div className="loginsignup-agree">
+                        <input type="checkbox" />
+                        <p>By continuing, I agree to the terms of use & privacy policy</p>
+                    </div>
+                )}
             </div>
-
         </div>
-    )
-}
+    );
+};
 
-export default LoginSignup
+export default LoginSignup;
