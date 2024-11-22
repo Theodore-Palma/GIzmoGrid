@@ -11,7 +11,10 @@ import men_banner from './Components/Assets/banner_mens.png';
 import women_banner from './Components/Assets/banner_women.png';
 import kid_banner from './Components/Assets/banner_kids.png';
 import Admin from './Components/Admin/AdminPage';
+import AddProductForm from './Components/Admin/AddProductForm';
 import { ShopContext } from './Context/ShopContext';
+
+
 
 const App = () => {
   const { user } = useContext(ShopContext);
@@ -30,7 +33,7 @@ const App = () => {
           </Route>
           <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<LoginSignup />} />
-
+          <Route path="/productform" element={<AddProductForm />} />
           {/* Admin route accessible to all users */}
           <Route path="/admin" element={<Admin />} />
         </Routes>

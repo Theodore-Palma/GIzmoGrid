@@ -10,8 +10,10 @@ const AdminPage = () => {
   const [formData, setFormData] = useState({
     id: "",
     name: "",
+    description: "",
     price: "",
     category: "",
+    images: []
   });
   const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
@@ -35,27 +37,49 @@ const AdminPage = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  // Handle image upload (example)
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setFormData({
+      ...formData,
+      images: files.map((file) => ({
+        public_id: "", // public_id will be from an image service like Cloudinary
+        url: URL.createObjectURL(file),
+      })),
+    });
+  };
+
   // Add or Edit product
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { id, name, description, price, category, images } = formData;
+
+    const productData = {
+      name,
+      description,
+      price,
+      category,
+      images,  // Assumed images will be uploaded via a service like Cloudinary
+    };
+
     if (isEdit) {
       try {
-        await axios.put(`/api/products/${formData.id}`, formData);
+        await axios.put(`/api/products/${id}`, productData);
         setProducts((prev) =>
           prev.map((product) =>
-            product.id === formData.id ? { ...product, ...formData } : product
+            product.id === id ? { ...product, ...productData } : product
           )
         );
         setIsEdit(false);
-        setFormData({ id: "", name: "", price: "", category: "" });
+        setFormData({ id: "", name: "", description: "", price: "", category: "", images: [] });
       } catch (error) {
         console.error("Error updating product:", error);
       }
     } else {
       try {
-        const response = await axios.post("/api/products", formData);
+        const response = await axios.post("/api/products", productData);
         setProducts([...products, response.data]);
-        setFormData({ id: "", name: "", price: "", category: "" });
+        setFormData({ id: "", name: "", description: "", price: "", category: "", images: [] });
       } catch (error) {
         console.error("Error adding product:", error);
       }
@@ -132,6 +156,13 @@ const AdminPage = () => {
             onChange={handleChange}
             required
           />
+          <textarea
+            name="description"
+            placeholder="Product Description"
+            value={formData.description}
+            onChange={handleChange}
+            required
+          />
           <input
             type="number"
             name="price"
@@ -139,6 +170,13 @@ const AdminPage = () => {
             value={formData.price}
             onChange={handleChange}
             required
+          />
+          <input
+            type="file"
+            name="images"
+            accept="image/*"
+            multiple
+            onChange={handleImageChange}
           />
           <input
             type="text"
@@ -166,10 +204,7 @@ const AdminPage = () => {
                         e.target.checked ? products.map((p) => p.id) : []
                       )
                     }
-                    checked={
-                      selectedProducts.length === products.length &&
-                      products.length > 0
-                    }
+                    checked={selectedProducts.length === products.length && products.length > 0}
                   />
                 </th>
                 <th>ID</th>
@@ -191,7 +226,7 @@ const AdminPage = () => {
                   </td>
                   <td>{product.id}</td>
                   <td>{product.name}</td>
-                  <td>${product.price}</td>
+                  <td>₱{product.price}</td>
                   <td>{product.category}</td>
                   <td>
                     <button onClick={() => handleEdit(product)}>Edit</button>
