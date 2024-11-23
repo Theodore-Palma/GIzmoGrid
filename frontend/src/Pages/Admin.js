@@ -1,10 +1,10 @@
 // Pages/Admin.js
 import React, { useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShopContext } from '../Context/ShopContext';
+
 
 const Admin = () => {
-  const { user } = useContext(ShopContext);
+  const { user } = useContext(CartContext);
   const navigate = useNavigate();
 
   // Redirect if the user is not an admin

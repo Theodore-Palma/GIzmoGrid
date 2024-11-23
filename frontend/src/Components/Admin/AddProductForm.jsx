@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MUIDataTable from 'mui-datatables';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+//import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
   AccordionSummary,
@@ -79,24 +79,28 @@ const AddProductForm = () => {
     return uploadedImages;
   };
 
-  // Add a new product
   const handleAddProduct = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form default submission behavior
     setLoading(true);
     try {
-      // Upload images first
+      // Upload images to Cloudinary first
       const uploadedImages = await uploadImagesToCloudinary();
-
-      // Add uploaded images to form data
+  
+      // Prepare form data with uploaded images
       const newFormData = {
-        ...formData,
-        images: uploadedImages,
+        ...formData,      // Include name, description, price, and category from state
+        images: uploadedImages, // Include Cloudinary image URLs
       };
-
-      // Save product data to the backend
+  
+      // Send the data to the backend API
       const response = await axios.post(API_URL, newFormData);
+  
       alert('Product added successfully');
+  
+      // Update product list with the new product
       setProducts([...products, response.data.product]);
+  
+      // Reset form and image file input
       setFormData({
         name: '',
         description: '',
@@ -112,7 +116,7 @@ const AddProductForm = () => {
       setLoading(false);
     }
   };
-
+  
   // Update an existing product
   const handleUpdateProduct = async (e) => {
     e.preventDefault();

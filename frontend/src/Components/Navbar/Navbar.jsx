@@ -1,14 +1,13 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import './Navbar.css';
 import logo from '../Assets/logo.png';
 import cart_icon from '../Assets/cart_icon.png';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-import { ShopContext } from '../../Context/ShopContext';
 
 const Navbar = () => {
     const [menu, setMenu] = useState('shop');
     const [showLogoutMessage, setShowLogoutMessage] = useState(false); // State to control the display of the logout message
-    const { getTotalCartItems } = useContext(ShopContext);
+  //  const { getTotalCartItems } = useContext(CartContext);
     const navigate = useNavigate(); // Hook to navigate programmatically
 
     const handleLogout = () => {
@@ -53,10 +52,9 @@ const Navbar = () => {
                     <Link to='/login'> <button>Login</button> </Link> // Show login if not logged in
                 )}
 
-                <Link to='/cart'>
+                <Link to='/cartpage'>
                     <img src={cart_icon} alt="" />
                 </Link>
-                <div className="nav-cart-count">{getTotalCartItems()}</div>
             </div>
 
             {/* Show logout message temporarily */}

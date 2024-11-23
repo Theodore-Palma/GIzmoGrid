@@ -1,4 +1,4 @@
-.item{
+/* .item{
     width: 280px;
 }
 
@@ -46,4 +46,101 @@
     .item-price-old{
         font-size: 13px;
     }
+} */
+.item {
+    width: 100%;
+    max-width: 320px; /* Ensures that items don't get too large */
+    margin: 10px auto;
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
 }
+
+@media (max-width: 767px) {
+    .item {
+        max-width: 100%;
+    }
+}
+
+@media (min-width: 768px) {
+    .item {
+        max-width: 240px; /* Slightly smaller width for tablets */
+    }
+}
+
+@media (min-width: 1024px) {
+    .item {
+        max-width: 280px; /* Medium screen sizes */
+    }
+}
+
+@media (min-width: 1280px) {
+    .item {
+        max-width: 320px; /* Larger screen sizes */
+    }
+}
+
+
+.item img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    object-fit: cover;
+}
+
+.item p {
+    margin: 8px 0;
+    font-size: 15px;
+    color: #333;
+    font-weight: 400;
+}
+
+.item-prices {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.item-price-new {
+    color: #474151;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.item-price-old {
+    color: #8c8c8c;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: line-through;
+}
+
+.item button {
+    margin-top: 12px;
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.item button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+
