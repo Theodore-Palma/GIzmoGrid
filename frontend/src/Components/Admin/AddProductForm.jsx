@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MUIDataTable from 'mui-datatables';
-//import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
   AccordionSummary,
@@ -188,6 +188,26 @@ const AddProductForm = () => {
     { name: 'price', label: 'Price', options: { customBodyRender: (value) => `₱${value}` } },
     { name: 'category', label: 'Category' },
     {
+      name: 'description',
+      label: 'Description',
+      options: {
+        customBodyRender: (value) => (
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="description-content"
+              id="description-header"
+            >
+              <span style={{ fontWeight: 500, color: '#555' }}>View Description</span>
+            </AccordionSummary>
+            <AccordionDetails>
+              <p style={{ margin: 0 }}>{value}</p>
+            </AccordionDetails>
+          </Accordion>
+        ),
+      },
+    },
+    {
       name: 'images',
       label: 'Images',
       options: {
@@ -234,6 +254,7 @@ const AddProductForm = () => {
       },
     },
   ];
+  
 
   const options = {
     selectableRows: 'multiple',
@@ -319,7 +340,6 @@ const AddProductForm = () => {
         </Button>
       </form>
 
-      <h2>Product List</h2>
       <MUIDataTable
         title="Product List"
         data={products}

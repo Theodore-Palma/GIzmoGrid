@@ -14,7 +14,7 @@ const DescriptionBox = () => {
                
             </div>
             <div className="descriptionbox-description">
-                <p>an eccomberaesrhisuhfnskd</p>
+                <p>an sssssssss</p>
             </div>
         </div>
     )

@@ -145,12 +145,7 @@ const LoginSignup = () => {
             {isLogin ? 'Sign Up Here' : 'Login Here'}
           </span>
         </p>
-        {!isLogin && (
-          <div className="loginsignup-agree">
-            <input type="checkbox" />
-            <p>By continuing, I agree to the terms of use & privacy policy</p>
-          </div>
-        )}
+       
       </div>
     </div>
   );

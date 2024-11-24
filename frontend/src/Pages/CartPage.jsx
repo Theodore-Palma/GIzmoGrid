@@ -5,6 +5,8 @@ import { Box, List, ListItem, Typography, Button, TextField } from '@mui/materia
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [error, setError] = useState(null);
+  const [checkoutError, setCheckoutError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -43,6 +45,37 @@ const Cart = () => {
     return cartItems
       .reduce((total, item) => total + item.product.price * item.quantity, 0)
       .toFixed(2);
+  };
+
+  // Handle checkout
+  const handleCheckout = async () => {
+    const lastLoggedInUser = JSON.parse(localStorage.getItem('lastLoggedInUser'));
+
+    if (!lastLoggedInUser || !lastLoggedInUser.email) {
+      setCheckoutError('No user found in localStorage. Please log in first.');
+      return;
+    }
+
+    const email = lastLoggedInUser.email;
+    const cartData = {
+      email,
+    };
+
+    try {
+      setLoading(true);
+      const response = await axios.post('http://localhost:4000/api/checkout/checkout', cartData);
+
+      if (response.status === 200) {
+        // Clear the cart after successful checkout (optional)
+        setCartItems([]);
+        alert('Checkout successful');
+      }
+    } catch (error) {
+      console.error(error);
+      setCheckoutError('Checkout failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (error) {
@@ -144,6 +177,11 @@ const Cart = () => {
           ₱{calculateTotal()}
         </Typography>
       </Box>
+      {checkoutError && (
+        <Typography color="error" sx={{ textAlign: 'center', marginTop: 2 }}>
+          {checkoutError}
+        </Typography>
+      )}
       <Button
         variant="contained"
         color="primary"
@@ -154,8 +192,10 @@ const Cart = () => {
           fontSize: '1rem',
           borderRadius: 2,
         }}
+        onClick={handleCheckout}
+        disabled={loading}
       >
-        Proceed to Checkout
+        {loading ? 'Processing...' : 'Proceed to Checkout'}
       </Button>
     </Box>
   );
